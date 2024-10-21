@@ -52,7 +52,7 @@ jobs:
           CHUNKS_SIZE: 20
           CHUNKS_IDX: ${{ matrix.chunk_index }} # Current chunk index
         run: |
-          python optimize.py
+          python optimizer.py
 
       - name: Upload optimization results
         uses: actions/upload-artifact@v3
