@@ -74,7 +74,7 @@ jobs:
 
       - name: Merge results
         run: |
-          python merge_results.py
+          python merge_result.py
 
       - name: Upload merged results
         uses: actions/upload-artifact@v3
