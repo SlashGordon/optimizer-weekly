@@ -13,7 +13,7 @@ def merge_json_files(result_files):
 
 def main():
     # Get all JSON result files from current directory
-    result_files = [file for file in os.listdir('.') if file.startswith('results_') and file.endswith('.json')]
+    result_files = [file for file in os.listdir('.') if file.startswith('result_') and file.endswith('.json')]
 
     # Merge the JSON files
     merged_results = merge_json_files(result_files)
