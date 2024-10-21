@@ -11,8 +11,8 @@ from pystockfilter.strategy.moving_average_rsi_strategy import MovingAverageRSIS
 from pystockfilter.data.stock_data_source import DataSourceModule as Data
 from pystockfilter.tool.start_chunked_optimizer import StartChunkedOptimizer
 
-CHUNKS = os.environ.get("CHUNKS_SIZE", 20)
-CHUNKS_IDX = os.environ.get("CHUNKS_IDX", 1)
+CHUNKS = int(os.environ.get("CHUNKS_SIZE", 20)) 
+CHUNKS_IDX = int(os.environ.get("CHUNKS_IDX", 1)) 
 # Set multiprocessing method to "fork" for optimized parallel processing in Unix-based systems.
 mp.set_start_method("fork")
 dax_symbols = [
