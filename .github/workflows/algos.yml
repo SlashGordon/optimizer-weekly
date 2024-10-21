@@ -58,7 +58,7 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: results_${{ matrix.chunk_index }}
-          path: results_*.json
+          path: result_*.json
 
   merge-results:
     runs-on: ubuntu-latest
