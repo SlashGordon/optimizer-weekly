@@ -70,7 +70,7 @@ jobs:
       - name: Download all optimization artifacts
         uses: actions/download-artifact@v3
         with:
-          name: results_* # Download all result artifacts
+          name: result_* # Download all result artifacts
 
       - name: Merge results
         run: |
