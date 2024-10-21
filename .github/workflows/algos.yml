@@ -57,7 +57,7 @@ jobs:
       - name: Upload optimization results
         uses: actions/upload-artifact@v3
         with:
-          name: results_${{ matrix.chunk_index }}
+          name: result_${{ matrix.chunk_index }}
           path: result_*.json
 
   merge-results:
