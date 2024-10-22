@@ -5,14 +5,16 @@ import math
 from pystockfilter.tool.start_chunked_optimizer import StartChunkedOptimizer
 from pystockfilter.tool.start_seq_optimizer import StartSequentialOptimizer as sso
 from pystockfilter.strategy.rsi_strategy import RSIStrategy as rsi
+from pystockfilter.strategy.atr_strategy import ATRStrategy as atr
+from pystockfilter.strategy.macd_strategy import MACDStrategy as macd
 from pystockfilter.strategy.sma_cross_sma_strategy import (
     SmaCrossSmaStrategy as sma_cross_sma,
 )
 from pystockfilter.strategy.ema_cross_ema_strategy import (
     EmaCrossEmaStrategy as ema_cross_ema,
 )
-from pystockfilter.strategy.uo_ema_cross_close_strategy import (
-    UltimateEmaCrossCloseStrategy as uo_ema_cross_close,
+from pystockfilter.strategy.uo_strategy import (
+    UltimateStrategy as uo_strategy,
 )
 from pystockfilter.strategy.moving_average_rsi_strategy import (
     MovingAverageRSIStrategy as ma_rsi,
@@ -24,6 +26,7 @@ CHUNKS = int(os.environ.get("CHUNKS_SIZE", 20))
 CHUNKS_IDX = int(os.environ.get("CHUNKS_IDX", 1))
 # Set multiprocessing method to "fork" for optimized parallel processing in Unix-based systems.
 mp.set_start_method("fork")
+
 dax_symbols = [
     "ADS.F",
     "AIR.F",
@@ -148,7 +151,7 @@ parameters = [
             "para_rsi_threshold": range(20, 100, 1),
         },
     ],
-    # Strategy: Ultimate Oscillator (UO) Strategy with EMA Cross Close
+    # Strategy: Ultimate Oscillator (UO) Strategy
     [
         {
             "para_uo_upper": range(20, 100, 1),
@@ -168,14 +171,26 @@ parameters = [
             and (p.para_uo_long - p.para_uo_medium) > 5
             and (p.para_uo_medium - p.para_uo_short) > 3,
         },
-        {
-            "para_ema_short": range(3, 19, 1),
-        },
     ],
     # Strategy: SMA Cross SMA Strategy
     [sma_cross_sma.get_optimizer_parameters()],
     # Strategy: EMA Cross EMA Strategy
     [ema_cross_ema.get_optimizer_parameters()],
+    # Strategy: ATR Strategy
+    [
+        {
+            "para_atr_window": range(10, 50, 1),
+        },
+        {
+            "constraint": lambda p: p.para_atr_enter > p.para_atr_exit,
+            "para_atr_enter": [x / 10 for x in range(10, 50)],  # e.g., 1.0 to 5.0
+            "para_atr_exit": [x / 10 for x in range(5, 25)],  # e.g., 0.5 to 2.5
+        },
+    ],
+    # Strategy: MACD Strategy
+    [
+        macd.get_optimizer_parameters(),
+    ],
 ]
 
 my_optimizer = StartChunkedOptimizer(
@@ -183,13 +198,15 @@ my_optimizer = StartChunkedOptimizer(
     strategies=[
         rsi,
         ma_rsi,
-        uo_ema_cross_close,
+        uo_strategy,
         sma_cross_sma,
         ema_cross_ema,
+        atr,
+        macd,
     ],
     optimizer_class=sso,
     optimizer_parameters=parameters,
-    data_source=Data(Data.Y_FINANCE),
+    data_source=Data(Data.Y_FINANCE_CACHE),
     data_chunk_size=300,
 )
 
