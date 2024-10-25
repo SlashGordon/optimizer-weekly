@@ -1,1 +1,1 @@
-pystockfilter
+pystockfilter>=2.3.1
